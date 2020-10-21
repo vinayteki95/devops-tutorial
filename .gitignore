@@ -104,11 +104,14 @@ celerybeat.pid
 # Environments
 .env
 .venv
+.virtualenv
 env/
 venv/
+virtualenv/
 ENV/
 env.bak/
 venv.bak/
+virtualenv.bak/
 
 # Spyder project settings
 .spyderproject
@@ -127,3 +130,8 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# new weird git ignore files
+..gitignore.un~
+.gitignore~
+*~
