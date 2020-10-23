@@ -32,22 +32,17 @@
         - name: "clone git repo"
           git:
             repo: "https://github.com/vinayteki95/devops-tutorial.git"
-            dest: "{{ app_path }}"
-        
-        - name: "setup virtualenv for python3"
-          shell:
-            chdir: "{{ app_path }}/devops-tutorial/applications/microservice"
-            cmd: python3 -m venv virtualenv
-                 source virtualenv/bin/activate && \
-                 pip install -r requirements.txt && \
-                 pytest -v;
+            dest: "{{ app_path }}/devops-tutorial"
+            version: main
         
         - name: "install packages in virtualenv"
           pip:
             chdir: "{{ app_path }}/devops-tutorial/applications/microservice/"
             virtualenv: "virtualenv"
-            virtualenv_python: /usr/bin/python3
+            virtualenv_command: "/usr/bin/python3 -m venv"
             requirements: requirements.txt
+          tags:
+            - run
 
         # later
         # - name: install docker
