@@ -1,0 +1,58 @@
+---
+-
+    name: "Deploy python simple microservice to aws ec2 server"
+    hosts: amazon_ec2
+    become: true    # elivate privileges
+    vars:
+        app_path: /var/customapps
+    tasks:
+        - name: "install python3"
+          yum:
+            name: python3
+            state: present
+        
+        - name: "verify if pip3 is already present"
+          shell: "pip3 --version"
+          register: pip3status
+        
+        - name: "install pip3"
+          shell: "python3 -m ensurepip"
+          when: pip3status.rc == 0
+        
+        - name: "setup code location directory"
+          file:
+            path: "{{ app_path }}"
+            state: directory
+        
+        - name: "install git"
+          yum:
+            name: git
+            state: installed
+
+        - name: "clone git repo"
+          git:
+            repo: "https://github.com/vinayteki95/devops-tutorial.git"
+            dest: "{{ app_path }}"
+        
+        - name: "setup virtualenv for python3"
+          shell:
+            chdir: "{{ app_path }}/devops-tutorial/applications/microservice"
+            cmd: python3 -m venv virtualenv
+                 source virtualenv/bin/activate && \
+                 pip install -r requirements.txt && \
+                 pytest -v;
+        
+        - name: "install packages in virtualenv"
+          pip:
+            chdir: "{{ app_path }}/devops-tutorial/applications/microservice/"
+            virtualenv: "virtualenv"
+            virtualenv_python: /usr/bin/python3
+            requirements: requirements.txt
+
+        # later
+        # - name: install docker
+        # - name: forget about virtualenv and pull docker image
+        # - name: run docker container of the application
+
+        # optional
+        # - name: run tests and deploy only after passing tests

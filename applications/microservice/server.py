@@ -70,4 +70,4 @@ def primefactors_route():
 
 
 if __name__ == "__main__":
-    app.run(port=5000)
+    app.run(host="0.0.0.0" ,port=80) # if you use 127.0.0.1/localhost it wont be accesible from host because those are 'lo' addresses of container

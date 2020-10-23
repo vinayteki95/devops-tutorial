@@ -63,7 +63,7 @@
     The application has two main goals
         1. respond to a number by factorial of it
         2. respond to a number by the total number of prime factors
-    
+
     Forget about the logic for now, these are simple algorithms which you can find explanations to virtually on any coding platform.
 
     We'll also make a distinct of unit tests and integration tests in an oversimplified fashion for now.
@@ -78,3 +78,98 @@
     There is a second option called the server-side hooks. This is not possible on shared github because obviously github would not want to let it's users run random scripts on thier servers.
 
     [TODO] Elaborate on unit testing and integration testing and how these test scripts are written
+
+    Below you can look into the pre-commit hook I wrote to ensure that tests are run before every commit and if the tests exit with a code 0 then the code is commited else the commit haults.
+
+```BASH
+    #/bin/bash
+
+    set -e
+
+    function test_python_microservice() {
+    # ensure we have a virtualenv and build it if we dont
+    if [ ! -d "applications/microservice/virtualenv" ]; then
+        cd applications/microservice
+        python3 -m venv applications/microservice/virtualenv
+        source virtualenv/bin/activate
+        pip install -r requirements.txt
+        deactivate
+    fi
+
+    # run pytest in a virtualenv
+    cd applications/microservice
+    source virtualenv/bin/activate
+    pytest -v
+    deactivate
+    }
+
+    test_python_microservice || ( echo " Fix your code to pass all the tests before you commit ! " && exit 1 )
+```
+
+    I'm well aware that the test is not coherently written, we'll improve upon every little aspect of this endevour once we complete one iteration of the entire pipeline. so hang on to it for now.
+
+#### Dockerization
+
+    Let's dockerize the application and make it independent of the underlying os and it's configuration as much as possible. This could be seen as a build stage. As this is a python application there isn't an application level build but in case of javascript web applications, java applications, go applications we'll have to compile the code and build our applications. Ideally we should build the application and package it in a docker image so that this image can be executed on any container orchestration service like docker swarn, kubernetes etc which we'll look into later on.
+
+    Let's build a base docker image for our python projects
+    We are building this image on a base alpine image for size optimised image.
+
+```Dockerfile
+    FROM alpine
+    RUN apk add --no-cache bash
+    RUN apk add --no-cache python3
+    RUN python3 -m ensurepip
+    RUN pip3 install --no-cache-dir --upgrade pip setuptools
+    CMD [ "/bin/bash" ]
+```
+
+    Once we have this file in place
+    check for the directory **docker** in the repository to find this file
+
+```BASH
+    # Build the docker image '-f for docker file name' , '-t for tagging the image'
+    sudo docker build -f alpine-python3.Dockerfile -t alpine-python3 .
+
+    # I tagged it with my dockerhub username so that i can push it into remote docker repository
+    sudo docker tag alpine-python3:latest -t 1k3tv1nay/alpine-python3:latest
+    sudo docker push 1k3tv1nay/alpine-python3
+```
+
+    To verify your server is running in docker
+
+```BASH
+    # run the server
+    # make sure you port forward the 80 port of local (or any other of your choice) with 5000 port of flask server
+    # another important point is in the flask application make sure you mention your ip address to be '0.0.0.0' so that the server routes trafic through every interface into flask server running on 5000 port
+    sudo docker run -it -p 80:5000 devops-microservice:0.0.1
+
+    # verify from your host machine
+    curl http://localhost:80/
+
+```
+
+    Now to start with out continuous integration and continuous deployment pipelines we need to have some CI/CD framework which can help us actually do this.
+    There are two options which vary in thier easy of use, community support etc. I don't want to get into the details on which is better for now.
+    CircleCI vs Jenkins
+    I'm going to start with Jenkins as it is self hosted. This gives us an opportunity to setup our AWS. We can even use Ansible (Configuration management tool) to manage out jenkins deployment. This will introduce us to some really important concepts right away.
+
+#### Ansible
+
+```BASH
+    #Installing Ansible
+    sudo apt-get install ansible # yup it's that simple
+```
+
+    Setup passwordless authentication from ansible-controller to ansible-managed-nodes
+
+    Steps:
+        step1:
+            create ssh key pair in ansible-controller
+            `ssh-keygen`
+        step2:
+            copy ssh public key to ansible-managed-nodes so that they can identify ansible-controller and send data securely to it
+            `ssh-copy-id -i ~/.ssh/id_rsa.pub ansible-node-user@ansible-node-ip`
+        step3:
+            verify by ssh ing into the node
+            `ssh -i ~/.ssh/id_rsa ansible-node-user@ansible-node-ip`
