@@ -11,13 +11,13 @@
           apt:
             name: python3-pip
             state: latest
-      roles:
-        - role: geerlingguy.docker
-
-      tasks:
         - name: Install docker-py python package
           pip:
             name: docker-py
+      roles:
+        - role: geerlingguy.docker
+        
+      tasks:
         - name: Re-create a redis container
           community.general.docker_container:
             name: python-microservice
