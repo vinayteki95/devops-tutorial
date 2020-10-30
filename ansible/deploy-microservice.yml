@@ -13,12 +13,11 @@
             state: latest
       roles:
         - role: geerlingguy.docker
-      post_tasks:
+
+      tasks:
         - name: Install docker-py python package
           pip:
             name: docker-py
-
-      tasks:
         - name: Re-create a redis container
           community.general.docker_container:
             name: python-microservice
