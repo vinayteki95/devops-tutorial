@@ -13,5 +13,12 @@ pipeline {
                 sh 'docker run python-microservice pytest -v'
             }
         }
+
+        stage ('Push Build') {
+            steps {
+                sh 'docker tag python-microservice 1k3tvinay/python-microservice;\
+                    docker push 1k3tv1nay/python-microservice'
+            }
+        }
     }
 }
