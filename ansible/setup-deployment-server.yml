@@ -14,6 +14,3 @@
         - name: install ansible galaxy roles required
           shell:
               cmd: "ansible-galaxy collection install community.general"
-    
-      roles:
-        - role: geerlingguy.docker
