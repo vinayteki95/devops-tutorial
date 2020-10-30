@@ -39,3 +39,12 @@
     - role: geerlingguy.docker
     - role: geerlingguy.java
     - role: geerlingguy.jenkins
+  
+  post_tasks:
+    - name: "Install role - docker"
+      shell:
+        cmd: "ansible-galaxy install geerlingguy.docker"
+        
+    - name: "Install collection community"
+      shell:
+        cmd: "ansible-galaxy collection install community.general"
