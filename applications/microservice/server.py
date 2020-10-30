@@ -3,6 +3,7 @@ from flask import request
 
 app = Flask(__name__)
 
+
 def factorial(number):
     """
     @params: number
@@ -23,6 +24,7 @@ def factorial(number):
     response = number * factorial(number - 1)
     return response
 
+
 def count_of_prime_factors(number):
     """
     @params: number
@@ -36,19 +38,19 @@ def count_of_prime_factors(number):
     count = 0
     factors = []
 
-    while number%2==0:
-        number/=2
-        count+=1
+    while number % 2 == 0:
+        number /= 2
+        count += 1
         factors.append(2)
 
     for i in range(3, int(number**0.5)+2, 2):
-        while number%i == 0:
-            count+=1
-            number/=i
+        while number % i == 0:
+            count += 1
+            number /= i
             factors.append(i)
-    
-    if number>1:
-        count+=1
+
+    if number > 1:
+        count += 1
         factors.append(number)
     # print("Factors: {}".format(factors))
     return count
@@ -58,10 +60,12 @@ def count_of_prime_factors(number):
 def healthcheck():
     return "server is running"
 
+
 @app.route('/factorial', methods=['GET'])
 def factorial_route():
     number = int(request.args.get('number'))
     return {"factorial": factorial(number)}
+
 
 @app.route('/primefactors', methods=['GET'])
 def primefactors_route():
@@ -70,4 +74,5 @@ def primefactors_route():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0" ,port=5000) # if you use 127.0.0.1/localhost it wont be accesible from host because those are 'lo' addresses of container
+    # if you use 127.0.0.1/localhost it wont be accesible from host because those are 'lo' addresses of container
+    app.run(host="0.0.0.0", port=5000)

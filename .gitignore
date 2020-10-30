@@ -135,3 +135,10 @@ dmypy.json
 ..gitignore.un~
 .gitignore~
 *~
+
+# secrets
+secrets/
+
+# terraform
+.terraform/
+*tfstate*

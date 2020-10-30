@@ -173,3 +173,18 @@
         step3:
             verify by ssh ing into the node
             `ssh -i ~/.ssh/id_rsa ansible-node-user@ansible-node-ip`
+
+    To enable sshing as root user:
+        edit the file `/etc/ssh/sshd_config`
+            PermitRootLogin yes
+            
+#### Jenkins setup
+
+    Now that we understand how to work with ansible let's setup jenkins and also docker with ansible on our server.
+    refer to `jenkins-docker.yml` file.
+    We downloaded the roles mentioned in the yaml file with:
+    `ansible-galaxy install <role-name-form-ansible-galaxy>`
+
+#### terraform
+    Infrastructure as code.
+    Infrastructure folder -> main.tf creates two ec2 instances 
