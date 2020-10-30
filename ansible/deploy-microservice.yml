@@ -6,9 +6,17 @@
       pre_tasks:
         - name: apt update
           apt:
-            update_cache: true
+            update_cache: 
+        - name: Install python3-pip
+          apt:
+            name: python3-pip
+            state: latest
       roles:
         - role: geerlingguy.docker
+      post_tasks:
+        - name: Install docker-py python package
+          pip:
+            name: docker-py
 
       tasks:
         - name: Re-create a redis container
