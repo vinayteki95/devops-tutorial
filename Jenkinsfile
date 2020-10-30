@@ -30,7 +30,16 @@ pipeline {
                 }
             }
         }
-
+        stage ('Setup Deployment Server') {
+            steps {
+                ansiblePlaybook credentialsId: 'application-server',
+                                disableHostKeyChecking: true,
+                                installation: 'ansible',
+                                inventory: 'ansible/app-inventory',
+                                playbook: 'ansible/setup-deployment-server.yml',
+                                extras: "-e COMMITHASH=${COMMITHASH}"
+            }
+        }
         stage ('Deploy server') {
             steps {
                 ansiblePlaybook credentialsId: 'application-server',

@@ -7,6 +7,9 @@
         - name: apt update
           apt:
             update_cache: true
+        - name: install ansible galaxy roles required
+          shell:
+            cmd: "ansible-galaxy install geerlingguy.docker"
     
       roles:
         - role: geerlingguy.docker
