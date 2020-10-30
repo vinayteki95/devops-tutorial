@@ -5,7 +5,7 @@ pipeline {
         stage('Build') {
             steps {
                 sh 'cd applications/microservice'
-                sh 'docker build -t python-microservice'
+                sh 'docker build . -t python-microservice'
             }
         }
 
