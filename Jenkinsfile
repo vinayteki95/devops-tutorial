@@ -4,7 +4,14 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                echo "hello world with hooks test 5"
+                sh 'cd applications/microservice'
+                sh 'docker build -t python-microservice'
+            }
+        }
+
+        stage ('Unit Test') {
+            steps {
+                sh 'docker run python-microservice pytest -v'
             }
         }
     }
