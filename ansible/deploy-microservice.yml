@@ -14,9 +14,14 @@
         - name: Install docker-py python package
           pip:
             name: docker-py
+            state: absent
+        - name: Install docker python package
+          pip:
+            name: docker
+            state: present
       roles:
         - role: geerlingguy.docker
-        
+
       tasks:
         - name: Re-create a redis container
           community.general.docker_container:
