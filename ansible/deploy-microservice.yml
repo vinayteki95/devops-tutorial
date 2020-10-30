@@ -11,23 +11,24 @@
           apt:
             name: python3-pip
             state: latest
-        - name: Install docker-py python package
-          pip:
-            name: docker-py
-            state: absent
         - name: Install docker python package
           pip:
             name: docker
+            state: absent
+        - name: Install docker-py python package
+          pip:
+            name: docker-py
             state: present
       roles:
         - role: geerlingguy.docker
 
       tasks:
-        - name: Re-create a redis container
-          community.general.docker_container:
+        - name: run python server in docker
+          docker:
             name: python-microservice
             image: "1k3tv1nay/python-microservice:{{COMMITHASH}}"
-            command: python3 server.py
-            state: present
+            command: "python3 server.py"
+            state: reloaded
+            pull: always
             ports:
               - 5000:8080
