@@ -1,0 +1,22 @@
+---
+    - name: Deploy python microservice
+      hosts: application
+      become: true
+      
+      pre_tasks:
+        - name: apt update
+          apt:
+            update_cache: true
+    
+      roles:
+        - role: geerlingguy.docker
+
+      tasks:
+        - name: Re-create a redis container
+          community.general.docker_container:
+            name: python-microservice
+            image: "1k3tv1nay/python-microservice:{{COMMITHASH}}"
+            command: python3 server.py
+            state: present
+            ports:
+              - 5000:8080

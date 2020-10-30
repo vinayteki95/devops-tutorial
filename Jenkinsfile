@@ -23,11 +23,22 @@ pipeline {
 
         stage ('Push Build') {
             steps {
-                sh 'docker tag python-microservice 1k3tv1nay/python-microservice:${COMMITHASH}'
+                sh "docker tag python-microservice 1k3tv1nay/python-microservice:${COMMITHASH}"
                 withCredentials([usernamePassword(credentialsId: 'dockercred', passwordVariable: 'docker_password', usernameVariable: 'docker_username')]) {
-                    sh 'docker login -u ${docker_username} -p ${docker_password}'
-                    sh 'docker push 1k3tv1nay/python-microservice:${COMMITHASH}'
+                    sh "docker login -u ${docker_username} -p ${docker_password}"
+                    sh "docker push 1k3tv1nay/python-microservice:${COMMITHASH}"
                 }
+            }
+        }
+
+        stage ('Deploy server') {
+            steps {
+                ansiblePlaybook credentialsId: 'application-server',
+                                disableHostKeyChecking: true,
+                                installation: 'ansible',
+                                inventory: 'app-inventory',
+                                playbook: 'ansible/deploy-microservice.yml',
+                                extras: "-e COMMITHASH=${COMMITHASH}"
             }
         }
     }
