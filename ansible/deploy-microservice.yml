@@ -12,7 +12,7 @@
         - name: Re-create a redis container
           community.general.docker_container:
             name: python-microservice
-            image: "1k3tv1nay/python-microservice:{{COMMIT_HASH}}"
+            image: "1k3tv1nay/python-microservice:{{COMMITHASH}}"
             command: python3 server.py
             state: present
             ports:
