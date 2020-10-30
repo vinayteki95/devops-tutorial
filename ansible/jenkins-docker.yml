@@ -43,8 +43,8 @@
   post_tasks:
     - name: "Install role - docker"
       shell:
-        cmd: "ansible-galaxy install geerlingguy.docker"
-        
+        cmd: "ansible-galaxy install geerlingguy.docker" # become user jenkins
+
     - name: "Install collection community"
       shell:
-        cmd: "ansible-galaxy collection install community.general"
+        cmd: "ansible-galaxy collection install community.general" # become user jenkins
