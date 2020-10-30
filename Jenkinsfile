@@ -36,7 +36,7 @@ pipeline {
                 ansiblePlaybook credentialsId: 'application-server',
                                 disableHostKeyChecking: true,
                                 installation: 'ansible',
-                                inventory: 'app-inventory',
+                                inventory: 'ansible/app-inventory',
                                 playbook: 'ansible/deploy-microservice.yml',
                                 extras: "-e COMMITHASH=${COMMITHASH}"
             }
